@@ -6,16 +6,16 @@
 //    Copyright (c) 2018 ProtoCentral
 //
 //    This example measures raw capacitance across CHANNEL0 and Gnd and
-//		prints on serial terminal
+//    prints on serial terminal
 //
-//		Arduino connections:
+//    Arduino connections:
 //
-//		Arduino   FDC1004 board
-//		-------   -------------
-//		5V - Vin
-// 	 GND - GND
-//		A4 - SDA
-//		A5 - SCL
+//    Arduino   FDC1004 board
+//    -------   -------------
+//    5V - Vin
+//   GND - GND
+//    A4 - SDA
+//    A5 - SCL
 //
 //    This software is licensed under the MIT License(http://opensource.org/licenses/MIT).
 //
@@ -75,6 +75,8 @@ float rate;   // pF/Hr
 int debug_begin_delay = 8000;
 
 FDC1004 FDC;
+
+uint32_t update_timestamp = 0;
 
 void setup()
 {
@@ -139,6 +141,7 @@ void setup()
   ble.setMode(BLUEFRUIT_MODE_DATA);
 
   Serial.println(F("******************************"));
+  delay(4000);
 }
 
 void loop()
@@ -160,37 +163,37 @@ void loop()
 
     float cap_readout = (float)capacitance/1000;
 
-    if(millis() > debug_begin_delay){
-      if (initial_cap_val == 0){
-        initial_cap_val = cap_readout;
-        initial_ms = millis();
-        ble.println("init cap val: ");
-        ble.println(initial_cap_val, 4);
-      }
-  
-      end_cap_val = cap_readout;
-      rate = (end_cap_val - initial_cap_val)/((millis()-initial_ms)/1000); // pF per second
-      rate = rate * 60 * 60;
-  
+    end_cap_val = cap_readout;
+    rate = (end_cap_val - initial_cap_val)/((millis()-initial_ms)/1000); // pF per second
+    rate = rate * 60 * 60;
+
+    if( millis() - update_timestamp > 1000){
       ble.print(millis());
       ble.print(", ");
       ble.print((((float)capacitance/1000)),4);   // in pF
       ble.print(", ");
-      ble.println(rate, 6);  // pf per hour
+      ble.print(offset_cal);
+      ble.print(", ");
+      ble.println(capdac);
+//      ble.print(", ");
+//      ble.println(rate, 6);  // pf per hour
+
+      update_timestamp = millis();
     }
+
 
 
     if (msb > UPPER_BOUND)               // adjust capdac accordingly
-	{
+  {
       if (capdac < FDC1004_CAPDAC_MAX)
-	  capdac++;
+    capdac++;
     }
-	else if (msb < LOWER_BOUND)
-	{
+  else if (msb < LOWER_BOUND)
+  {
       if (capdac > 0)
-	  capdac--;
+    capdac--;
     }
 
   }
-  delay(1000);
+//  delay(1000);
 }

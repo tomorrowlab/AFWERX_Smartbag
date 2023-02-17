@@ -29,7 +29,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////
 
 #include <Wire.h>
-#include <Protocentral_FDC1004.h>
+#include "Protocentral_FDC1004.h"
 
 #include <Arduino.h>
 #include <SPI.h>
@@ -46,7 +46,8 @@
 
 #define UPPER_BOUND  0X4000                 // max readout capacitance
 #define LOWER_BOUND  (-1 * UPPER_BOUND)
-#define CHANNEL 0                          // channel to be read
+#define CHANNEL_A 0                          // channel to be read
+#define CHANNEL_B 3                          // reference channel
 #define MEASURMENT 0                       // measurment channel
 
 /* ...hardware SPI, using SCK/MOSI/MISO hardware SPI pins and then user selected CS/IRQ/RST */
@@ -147,7 +148,7 @@ void setup()
 void loop()
 {
   
-  FDC.configureMeasurementSingle(MEASURMENT, CHANNEL, capdac);
+  FDC.configureMeasurementDiffernetial(MEASURMENT, CHANNEL_A, CHANNEL_B);
   FDC.configureOffsetCalibration(MEASURMENT, offset_cal);
   FDC.triggerSingleMeasurement(MEASURMENT, FDC1004_100HZ);
 
@@ -194,6 +195,9 @@ void loop()
     capdac--;
     }
 
+  } else { 
+    Serial.println("not ready");
+    delay(1000);
   }
 //  delay(1000);
 }

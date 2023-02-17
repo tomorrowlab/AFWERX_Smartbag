@@ -64,6 +64,7 @@ class FDC1004
     int32_t getCapacitance(uint8_t channel = 1);
     uint8_t getRawCapacitance(uint8_t channel, fdc1004_measurement_t * value);
     uint8_t configureMeasurementSingle(uint8_t measurement, uint8_t channel, uint8_t capdac);
+    uint8_t configureMeasurementDiffernetial(uint8_t measurement, uint8_t channel_a, uint8_t channel_b);
     uint8_t triggerSingleMeasurement(uint8_t measurement, uint8_t rate);
     uint8_t configureOffsetCalibration(uint8_t measurement, float offset);
     uint8_t readMeasurement(uint8_t measurement, uint16_t * value);

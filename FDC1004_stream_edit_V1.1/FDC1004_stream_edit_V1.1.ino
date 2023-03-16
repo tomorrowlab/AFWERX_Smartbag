@@ -49,6 +49,8 @@
 #define CHANNEL_A 0                          // channel to be read
 #define CHANNEL_B 3                          // reference channel
 #define MEASURMENT 0                       // measurment channel
+#define UPPER_GAIN 1
+#define LOWER_GAIN 0000
 
 /* ...hardware SPI, using SCK/MOSI/MISO hardware SPI pins and then user selected CS/IRQ/RST */
 Adafruit_BluefruitLE_SPI ble(BLUEFRUIT_SPI_CS, BLUEFRUIT_SPI_IRQ, BLUEFRUIT_SPI_RST);
@@ -60,7 +62,7 @@ void error(const __FlashStringHelper*err) {
 }
 
 int capdac = 0;
-float offset_cal = -4;   // in pF
+float offset_cal = 0;   // in pF
 // char result[100];
 
 // weight conversion 
@@ -150,6 +152,7 @@ void loop()
   
   FDC.configureMeasurementDiffernetial(MEASURMENT, CHANNEL_A, CHANNEL_B);
   FDC.configureOffsetCalibration(MEASURMENT, offset_cal);
+  FDC.configureGainCalibration(MEASURMENT, UPPER_GAIN, LOWER_GAIN);
   FDC.triggerSingleMeasurement(MEASURMENT, FDC1004_100HZ);
 
   //wait for completion
@@ -184,16 +187,16 @@ void loop()
 
 
 
-    if (msb > UPPER_BOUND)               // adjust capdac accordingly
-  {
-      if (capdac < FDC1004_CAPDAC_MAX)
-    capdac++;
-    }
-  else if (msb < LOWER_BOUND)
-  {
-      if (capdac > 0)
-    capdac--;
-    }
+  //   if (msb > UPPER_BOUND)               // adjust capdac accordingly
+  // {
+  //     if (capdac < FDC1004_CAPDAC_MAX)
+  //   capdac++;
+  //   }
+  // else if (msb < LOWER_BOUND)
+  // {
+  //     if (capdac > 0)
+  //   capdac--;
+  //   }
 
   } else { 
     Serial.println("not ready");

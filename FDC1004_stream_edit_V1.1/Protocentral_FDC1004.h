@@ -67,6 +67,7 @@ class FDC1004
     uint8_t configureMeasurementDiffernetial(uint8_t measurement, uint8_t channel_a, uint8_t channel_b);
     uint8_t triggerSingleMeasurement(uint8_t measurement, uint8_t rate);
     uint8_t configureOffsetCalibration(uint8_t measurement, float offset);
+    uint8_t configureGainCalibration(uint8_t measurement, uint8_t gain, uint16_t gain_decimal);
     uint8_t readMeasurement(uint8_t measurement, uint16_t * value);
     uint8_t measureChannel(uint8_t channel, uint8_t capdac, uint16_t * value);
 	    uint16_t read16(uint8_t reg);

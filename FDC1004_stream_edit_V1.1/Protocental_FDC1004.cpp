@@ -28,6 +28,7 @@ uint8_t MEAS_MSB[] = {0x00, 0x02, 0x04, 0x06};
 uint8_t MEAS_LSB[] = {0x01, 0x03, 0x05, 0x07};
 uint8_t SAMPLE_DELAY[] = {11,11,6,3};
 uint8_t OFFSET_CAL[] = {0x0D, 0x0E,0x0F, 0x10};
+uint8_t GAIN_CAL[] = {0x11, 0x12,0x13, 0x14};
 
 FDC1004::FDC1004(uint16_t rate)
 {
@@ -123,6 +124,24 @@ uint8_t FDC1004::configureOffsetCalibration(uint8_t measurement, float offset)
     offset_data = (int(offset)) << 11;
     // offset_data |= decimal;
     write16(OFFSET_CAL[measurement], offset_data);
+}
+
+uint8_t FDC1004::configureGainCalibration(uint8_t measurement, uint8_t gain, uint16_t gain_decimal)
+{
+    //verify data
+    if (!FDC1004_IS_MEAS(measurement)) {
+        Serial.println("bad trigger request");
+        return 1;
+    }
+
+    if( gain > 4){
+        Serial.println("Gain cannot be greater than 4");
+        return 1;
+    }
+
+    uint16_t gain_data;
+    gain_data = (gain) << 14 | (gain_decimal) << 0;
+    write16(GAIN_CAL[measurement], gain_data);
 }
 
 /**
